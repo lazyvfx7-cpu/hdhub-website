@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HDHUB — Movie Discovery Demo</title>
+<style>
+:root{--bg:#09090c;--panel:#141419;--red:#ed1c2e;--muted:#a6a6b2;--white:#f8f8fb}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--white);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+header{position:sticky;top:0;z-index:10;background:#09090ceF;backdrop-filter:blur(14px);border-bottom:1px solid #25252d}
+.nav{max-width:1180px;margin:auto;padding:15px 20px;display:flex;gap:22px;align-items:center}.logo{font-weight:950;letter-spacing:1px;font-size:26px;color:white}.logo span{color:var(--red)}.navlinks{display:flex;gap:18px;margin-left:12px}.navlinks a{color:#d4d4dc;text-decoration:none;font-size:14px}.navlinks a:hover{color:white}.search{margin-left:auto;background:#19191f;border:1px solid #30303a;color:white;border-radius:999px;padding:11px 15px;width:220px;outline:none}
+main{max-width:1180px;margin:auto;padding:24px 20px 55px}.hero{min-height:370px;border-radius:22px;overflow:hidden;position:relative;background:linear-gradient(90deg,#09090c 2%,#09090cdd 40%,#09090c22 100%),linear-gradient(0deg,#09090c 0%,transparent 45%),radial-gradient(circle at 78% 25%,#e8324d 0,#6a1028 24%,#1b1525 52%,#111116 75%);display:flex;align-items:end;padding:38px;margin-bottom:32px}
+.hero:after{content:"HD";position:absolute;right:8%;top:0;font-size:250px;font-weight:1000;letter-spacing:-20px;color:#ffffff0c;transform:rotate(-8deg);pointer-events:none}
+.badge{display:inline-block;background:var(--red);font-size:11px;font-weight:800;letter-spacing:1.4px;padding:7px 10px;border-radius:5px}.hero h1{font-size:clamp(36px,6vw,62px);line-height:1.02;margin:15px 0 12px;max-width:600px}.hero p{max-width:500px;color:#d1d1d8;line-height:1.6;margin:0 0 20px}.btn{border:0;border-radius:7px;padding:12px 18px;font-weight:800;cursor:pointer}.primary{background:var(--red);color:white}.secondary{background:#ffffff17;color:white;border:1px solid #ffffff35;margin-left:8px}
+.section-head{display:flex;align-items:center;justify-content:space-between;margin:26px 0 15px}.section-head h2{font-size:21px;margin:0}.section-head small{color:var(--muted)}.chips{display:flex;gap:9px;overflow:auto;padding:1px 0 10px}.chip{white-space:nowrap;background:#17171d;color:#d8d8df;border:1px solid #2d2d36;border-radius:999px;padding:9px 15px;cursor:pointer}.chip.active,.chip:hover{background:var(--red);border-color:var(--red);color:white}
+.grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px}.card{min-width:0;background:var(--panel);border:1px solid #25252d;border-radius:13px;overflow:hidden;transition:transform .2s,border-color .2s}.card:hover{transform:translateY(-4px);border-color:#5b2930}.poster{height:205px;display:flex;align-items:center;justify-content:center;text-align:center;padding:16px;position:relative;font-size:25px;font-weight:950;letter-spacing:-.6px;text-shadow:0 3px 18px #0008;background:linear-gradient(145deg,#531323,#15151c 70%)}.poster:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 70% 20%,#ff6a7533,transparent 35%),linear-gradient(0deg,#0009,transparent 70%)}.poster span{position:relative}.poster em{position:absolute;top:10px;left:10px;font-size:10px;font-style:normal;background:#0009;border:1px solid #ffffff38;padding:5px 7px;border-radius:4px;letter-spacing:1px}.card-info{padding:12px}.card h3{font-size:14px;margin:0 0 7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.meta{color:var(--muted);font-size:12px;display:flex;justify-content:space-between}.lang{color:#f07b86}.empty{color:var(--muted);padding:30px 0}.source-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.source-card{display:block;background:#17171d;border:1px solid #30303a;border-radius:12px;padding:17px;color:white;text-decoration:none}.source-card strong{display:block;margin-bottom:6px}.source-card span{color:#b8b8c3;font-size:12px;line-height:1.5}.source-card:hover{border-color:var(--red);transform:translateY(-2px)}.notice{margin-top:34px;padding:15px 17px;border:1px solid #34303a;background:#15131a;border-radius:10px;color:#c8c5d0;font-size:13px;line-height:1.6}.modal{display:none;position:fixed;inset:0;background:#000c;z-index:20;align-items:center;justify-content:center;padding:20px}.modal.show{display:flex}.modal-box{width:min(520px,100%);background:#17171e;border:1px solid #383843;border-radius:16px;padding:25px}.modal-box h2{margin-top:0}.modal-box p{color:#c7c7d1;line-height:1.6}.close{float:right;background:#2b2b34;color:white;border:0;border-radius:7px;padding:7px 11px;cursor:pointer}
+footer{border-top:1px solid #25252d;color:#777783;text-align:center;padding:22px;font-size:12px}
+@media(max-width:850px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.navlinks{display:none}.search{width:min(48vw,220px)}.hero{min-height:340px;padding:25px}.poster{height:175px}}
+@media(max-width:520px){.source-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.nav{padding:13px}.logo{font-size:23px}.search{width:42vw;padding:10px 12px}main{padding:17px 13px 40px}.hero{min-height:355px;padding:22px}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.poster{height:180px}.hero p{font-size:14px}.section-head h2{font-size:18px}}
+</style>
+</head>
+<body>
+<header><div class="nav">
+  <div class="logo">HD<span>HUB</span></div>
+  <nav class="navlinks"><a href="#home">Home</a><a href="#movies">Movies</a><a href="#languages">Languages</a></nav>
+  <input class="search" id="search" type="search" placeholder="Search movies..." aria-label="Search movies">
+</div></header>
+<main id="home">
+<section class="hero">
+  <div>
+    <span class="badge">MOVIE DISCOVERY</span>
+    <h1>Your next movie<br>starts here.</h1>
+    <p>Explore popular picks across languages. Search the demo catalog, browse genres, and open a title to see its details.</p>
+    <button class="btn primary" onclick="document.getElementById('movies').scrollIntoView({behavior:'smooth'})">Explore Movies ↓</button>
+    <button class="btn secondary" onclick="showInfo('HDHUB Demo','This is a front-end demo. Play buttons are previews only; no films are hosted or streamed here.')">About Demo</button>
+  </div>
+</section>
+<section id="languages">
+  <div class="section-head"><h2>Browse by Language</h2><small>Choose your vibe</small></div>
+  <div class="chips" id="languageChips">
+    <button class="chip active" data-lang="All">All Movies</button><button class="chip" data-lang="Kannada">Kannada</button><button class="chip" data-lang="Telugu">Telugu</button><button class="chip" data-lang="Tamil">Tamil</button><button class="chip" data-lang="Hindi">Hindi</button><button class="chip" data-lang="Malayalam">Malayalam</button><button class="chip" data-lang="English">English</button>
+  </div>
+</section>
+<section id="movies">
+  <div class="section-head"><h2>Latest & Trending</h2><small id="count">10 titles</small></div>
+  <div class="grid" id="grid"></div>
+  <div class="empty" id="empty" hidden>No titles found. Try another search or language.</div>
+</section>
+<section id="legal-sources">
+  <div class="section-head"><h2>Watch Legally</h2><small>Official streaming platforms</small></div>
+  <div class="source-grid">
+    <a class="source-card" href="https://www.netflix.com/in/" target="_blank" rel="noopener noreferrer"><strong>Netflix India ↗</strong><span>Check the official catalog and subscription options.</span></a>
+    <a class="source-card" href="https://www.primevideo.com/" target="_blank" rel="noopener noreferrer"><strong>Prime Video ↗</strong><span>Browse movies available in your region.</span></a>
+    <a class="source-card" href="https://www.hotstar.com/in" target="_blank" rel="noopener noreferrer"><strong>JioHotstar ↗</strong><span>Open the official India streaming service.</span></a>
+    <a class="source-card" href="https://www.zee5.com/" target="_blank" rel="noopener noreferrer"><strong>ZEE5 ↗</strong><span>Explore movies and regional-language titles.</span></a>
+    <a class="source-card" href="https://www.sonyliv.com/" target="_blank" rel="noopener noreferrer"><strong>SonyLIV ↗</strong><span>Check the official catalog for availability.</span></a>
+    <a class="source-card" href="https://www.youtube.com/movies" target="_blank" rel="noopener noreferrer"><strong>YouTube Movies ↗</strong><span>Find official movie rentals, purchases, or free titles where available.</span></a>
+  </div>
+</section>
+<div class="notice"><strong>Legal streaming note:</strong> These links open official services; availability varies by title, region, and subscription. HDHUB does not host or unlock full movies. To play films inside this website, the rights-holder or streaming provider must authorize an embed/player or provide an approved integration. The YouTube IFrame API supports embedding eligible YouTube videos; it does not grant rights to stream arbitrary films.</div>
+<div class="notice"><strong>Demo notice:</strong> This website uses sample movie entries and decorative poster art. It does not host movies or provide unauthorized streams. Real streaming requires licensed sources or links to official services.</div>
+</main>
+<footer>© 2026 HDHUB Demo · Movie discovery UI · Not an official streaming service</footer>
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><div class="modal-box"><button class="close" onclick="closeInfo()">✕ Close</button><h2 id="modalTitle"></h2><p id="modalText"></p><button class="btn primary" onclick="closeInfo()">Got it</button></div></div>
+<script>
+const titles=[
+ {name:"Kantara: Chapter One",lang:"Kannada",year:"2025",genre:"Action · Drama",rating:"8.4",tone:"#6c241e"},
+ {name:"Pushpa 2",lang:"Telugu",year:"2024",genre:"Action · Crime",rating:"7.8",tone:"#5a2c17"},
+ {name:"Vettaiyan",lang:"Tamil",year:"2024",genre:"Action · Thriller",rating:"7.1",tone:"#24354b"},
+ {name:"Bhool Bhulaiyaa 3",lang:"Hindi",year:"2024",genre:"Comedy · Horror",rating:"6.8",tone:"#39214d"},
+ {name:"Manjummel Boys",lang:"Malayalam",year:"2024",genre:"Adventure · Thriller",rating:"8.2",tone:"#17483f"},
+ {name:"Dune: Part Two",lang:"English",year:"2024",genre:"Sci-Fi · Adventure",rating:"8.5",tone:"#68451e"},
+ {name:"777 Charlie",lang:"Kannada",year:"2022",genre:"Adventure · Drama",rating:"8.7",tone:"#244d56"},
+ {name:"Salaar",lang:"Telugu",year:"2023",genre:"Action · Thriller",rating:"6.6",tone:"#333b45"},
+ {name:"Amaran",lang:"Tamil",year:"2024",genre:"Action · Biography",rating:"8.1",tone:"#314e69"},
+ {name:"Premalu",lang:"Malayalam",year:"2024",genre:"Romance · Comedy",rating:"7.8",tone:"#71364c"}
+];
+let selected="All";
+const grid=document.getElementById("grid"), search=document.getElementById("search");
+function render(){
+ const q=search.value.trim().toLowerCase();
+ const list=titles.filter(t=>(selected==="All"||t.lang===selected)&&(t.name.toLowerCase().includes(q)||t.lang.toLowerCase().includes(q)||t.genre.toLowerCase().includes(q)));
+ grid.innerHTML=list.map((t,i)=>`<article class="card"><div class="poster" style="background:radial-gradient(circle at 70% 20%,${t.tone},transparent 48%),linear-gradient(145deg,${t.tone},#121218 78%)"><em>HDHUB PICK</em><span>${t.name.toUpperCase()}</span></div><div class="card-info"><h3>${t.name}</h3><div class="meta"><span>${t.year} · <span class="lang">${t.lang}</span></span><span>★ ${t.rating}</span></div><div style="margin-top:9px;color:#a6a6b2;font-size:11px">${t.genre}</div><button class="btn primary" style="width:100%;margin-top:12px;padding:9px" onclick="showMovie('${t.name.replace(/'/g,"\\'")}','${t.lang}','${t.year}','${t.genre}','${t.rating}')">View Details</button></div></article>`).join("");
+ document.getElementById("count").textContent=list.length+" titles";
+ document.getElementById("empty").hidden=list.length!==0;
+}
+function showMovie(name,lang,year,genre,rating){showInfo(name,`Language: ${lang}\\nYear: ${year}\\nGenre: ${genre}\\nDemo rating: ★ ${rating}\\n\\nThis is a sample catalog entry. A licensed streaming source would be connected here in a full version.`)}
+function showInfo(title,txt){document.getElementById("modalTitle").textContent=title;document.getElementById("modalText").textContent=txt;document.getElementById("modal").classList.add("show")}
+function closeInfo(){document.getElementById("modal").classList.remove("show")}
+search.addEventListener("input",render);
+document.querySelectorAll(".chip").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll(".chip").forEach(x=>x.classList.remove("active"));b.classList.add("active");selected=b.dataset.lang;render()}));
+document.getElementById("modal").addEventListener("click",e=>{if(e.target.id==="modal")closeInfo()});
+render();
+</script>
+</body></html>
